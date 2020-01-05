@@ -1,0 +1,30 @@
+{
+  "name": "notepad",
+  "version": "1.0.0",
+  "description": "Simple notepad desktop app built in Electron.JS",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-sankhadip/ElectronNotepad.git"
+  },
+  "keywords": [
+    "Notepad",
+    "Electron.JS",
+    "editor"
+  ],
+  "author": "Sankhadip Samanta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dev-sankhadip/ElectronNotepad/issues"
+  },
+  "homepage": "https://github.com/dev-sankhadip/ElectronNotepad#readme",
+  "devDependencies": {
+    "electron": "^7.1.7"
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0"
+  }
+}
