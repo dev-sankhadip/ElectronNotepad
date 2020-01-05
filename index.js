@@ -32,6 +32,13 @@ function build_app()
                     {
                         uploadFolderWindow(app_window);
                     }
+                },
+                {
+                    label:'Open recent...',
+                    click:function()
+                    {
+                        console.log('open recent');
+                    }
                 }
             ]
         },
@@ -47,7 +54,7 @@ function build_app()
         {
             fs.readFile(res.filePaths[0],'utf-8',(err,data)=>{
                 // ipcMain.emit('filedata', data);
-                app_window.webContents.send("filedata",{"data":data});
+                app_window.webContents.send("filedata",{"data":data, "path":res.filePaths[0]});
             })
         })
         .catch((err)=>
