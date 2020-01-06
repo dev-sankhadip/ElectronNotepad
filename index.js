@@ -74,4 +74,16 @@ function build_app()
             console.log("err");
         })
     }
+
+    ipcMain.on('newdata',(e,arg)=>
+    {
+        fs.writeFile(arg.path,arg.file,(err)=>
+        {
+            if(err)
+            {
+                throw err;
+            }
+            console.log('data saved');
+        })
+    })
 }
