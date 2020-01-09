@@ -1,13 +1,16 @@
+"use strict"
 const { BrowserWindow,app,Menu, MenuItem, dialog, ipcMain }=require('electron');
 const fs=require('fs-extra');
 const os=require('os');
 const { savePathsToHistory }=require('./lib/saveHistory');
+const { readHistory }=require('./lib/readHistory');
 
 app.on('ready', build_app);
 
 
-function build_app()
+async function build_app()
 {
+    //open the desktop window
     var app_window=new BrowserWindow({
         webPreferences:{
             nodeIntegration:true,
@@ -15,8 +18,18 @@ function build_app()
         title:'Download Manager'
     });
     app_window.loadFile('asset/index.html');
-    app_window.openDevTools();
+    
 
+    // set open recent submenu
+    let submenuOfOpenRecent=[];
+    let paths=readHistory();
+    const allPaths=await paths;
+    allPaths.paths.map((path)=>
+    {
+        submenuOfOpenRecent.push({label:path, click:function(){ openRecentFile(path) }});
+    })
+
+    //set all menu
     let menu_list=[
         {
             label:'File', 
@@ -30,6 +43,7 @@ function build_app()
                 },
                 {
                     label:'Open recent...',
+                    submenu:submenuOfOpenRecent,
                     click:function()
                     {
                         console.log('open recent');
@@ -39,16 +53,19 @@ function build_app()
         },
     ];
     
+    // set the menu to desktop app
     const menu_design=Menu.buildFromTemplate(menu_list);
     Menu.setApplicationMenu(menu_design);
 
+    // execute function when openFIleWIndow opens
     function uploadFileWindow()
     {
         dialog.showOpenDialog(app_window,{properties:['openFile']})
         .then((res)=>
         {
             fs.readFile(res.filePaths[0],'utf-8',(err,data)=>{
-                savePathsToHistory(res);
+                // save file path in history
+                savePathsToHistory(res.filePaths[0]);
                 app_window.webContents.send("filedata",{"data":data, "path":res.filePaths[0]});
             })
         })
@@ -58,6 +75,18 @@ function build_app()
         })
     }
 
+    //open recent file in notepad
+    function openRecentFile(path)
+    {
+        console.log(path);
+        fs.readFile(path,'utf-8',(err,data)=>{
+            //save file path to history
+            savePathsToHistory(path);
+            app_window.webContents.send("filedata",{"data":data, "path":path});
+        })
+    }
+
+    // execute function when openFolderWindow opens
     function uploadFolderWindow()
     {
         dialog.showOpenDialog(app_window,{properties:['openDirectory']})
@@ -70,6 +99,8 @@ function build_app()
         })
     }
 
+
+    // recieve new file data and path throught main and renderer method
     ipcMain.on('newdata',(e,arg)=>
     {
         fs.writeFile(arg.path,arg.file,(err)=>
