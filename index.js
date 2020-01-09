@@ -26,7 +26,7 @@ async function build_app()
     const allPaths=await paths;
     allPaths.paths.map((path)=>
     {
-        submenuOfOpenRecent.push({label:path, click:function(){ openRecentFile(path) }});
+        submenuOfOpenRecent.push({label:path, click:function(){ openRecentFile(path) }},{type:'separator'});
     })
 
     //set all menu
