@@ -1,21 +1,15 @@
-const { ipcRenderer }=require('electron');
+const { ipcRenderer } = require("electron");
 
-let path="";
+let path = "";
 
-ipcRenderer.on('filedata',(event, data)=>
-{
-    document.getElementById("editor").value=data.data;
-    path=data.path;
-})
+ipcRenderer.on("filedata", (event, data) => {
+  document.getElementById("editor").value = data.data;
+  path = data.path;
+});
 
-
-document.addEventListener("keydown", function(e)
-{
-    if(e.ctrlKey && e.which==83)
-    {
-        let fileNewData=document.getElementById("editor").value;
-        // console.log(path);
-        // console.log(fileNewData);
-        ipcRenderer.send('newdata',{'path':path,"file":fileNewData});
-    }
-})
+document.addEventListener("keydown", function (e) {
+  if (e.ctrlKey && e.which == 83) {
+    let fileNewData = document.getElementById("editor").value;
+    ipcRenderer.send("newdata", { path: path, file: fileNewData });
+  }
+});
